@@ -1,12 +1,23 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group = 'tech.oorjaa'
 version = '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 dependencies {

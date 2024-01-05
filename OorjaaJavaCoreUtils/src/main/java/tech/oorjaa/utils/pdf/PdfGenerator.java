@@ -1,5 +1,6 @@
-package tech.oorjaa.pdf;
+package tech.oorjaa.utils.pdf;
 
+import com.lowagie.text.DocumentException;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
@@ -11,10 +12,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-public class PdfServiceUsingThymeLeafAndFlyingSaucer implements PdfService {
+public class PdfGenerator implements PdfService {
 
 
     public byte[] convertHtmlToPdf(String html) throws Exception {
@@ -29,12 +28,10 @@ public class PdfServiceUsingThymeLeafAndFlyingSaucer implements PdfService {
     }
 
     @Override
-    public void savePdfToLocal(byte[] pdfBytes, String filePath) {
+    public void savePdfToLocal(byte[] pdfBytes, String filePath) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             fos.write(pdfBytes);
             System.out.println("PDF saved to: " + filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -45,12 +42,9 @@ public class PdfServiceUsingThymeLeafAndFlyingSaucer implements PdfService {
         String region = "your-region";  // e.g., "us-east-1"
         String bucketName = "your-bucket-name";
 
-        //if (pdfBytes != null) {
-            S3Client s3Client = S3Client.builder()
-                    .region(Region.of(region))
-                    .build();
-        //}
-        try {
+        try (S3Client s3Client = S3Client.builder()
+                .region(Region.of(region))
+                .build()) {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(pdfBytes);
 
             // Specify the S3 key (file name) under which you want to save the PDF
@@ -64,11 +58,6 @@ public class PdfServiceUsingThymeLeafAndFlyingSaucer implements PdfService {
 
             System.out.println("File uploaded successfully. ETag: " + response.eTag());
 
-        } catch (Exception e) {
-            // Handle exceptions appropriately
-            e.printStackTrace();
-        } finally {
-            s3Client.close();
         }
 
     }
