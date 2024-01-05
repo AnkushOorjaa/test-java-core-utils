@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'tech.oorjaa'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'software.amazon.awssdk:aws-sdk-java:2.20.50'
+    implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.13.RELEASE'
+    implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.1.22'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
